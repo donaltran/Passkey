@@ -1,2 +1,9 @@
-pydantic==2.5.0
-pydantic-settings==2.1.0
+fastapi>=0.115.0
+uvicorn>=0.34.0
+sqlalchemy>=2.0.36
+pydantic>=2.10.0
+PyJWT>=2.10.0
+passlib>=1.7.4
+bcrypt
+alembic>=1.14.0
+aiosqlite>=0.21.0

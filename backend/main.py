@@ -1,7 +1,13 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from app.api.v1.router import api_router
+from app.db.init_db import init_db
 
-app = FastAPI(title = "Passkey")
+app = FastAPI(
+    title = "Passkeyd",
+    description="All encryption/decryption happens client-side. The server never sees your passwords.",
+    version="1.0.0"
+)
 
 app.add_middleware(
     CORSMiddleware,
@@ -11,9 +17,15 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+@app.on_event("startup")
+async def startup():
+    init_db()
+
+app.include_router(api_router, prefix="/api/v1")
+
 @app.get("/")
 def root():
-    return {"message": "Passkey"}
+    return {"message": "Passkeyd", "docs": "/docs"}
 
 @app.get("/health")
 def health_check():
