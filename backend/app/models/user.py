@@ -10,7 +10,7 @@ class User(Base):
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     email = Column(String, unique=True, nullable=False, index=True)
     auth_key_hash = Column(String, nullable=False)
-    salt = Column(LargeBinary, nullable=False)
+    salt = Column(String, nullable=False)
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
     last_login = Column(DateTime, nullable=True)

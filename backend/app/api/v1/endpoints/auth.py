@@ -19,7 +19,7 @@ def fetch_salt(payload: dict, db: Session = Depends(get_db)):
         # Return a fake salt to prevent user enumeration
         import os
         return {"salt": base64.b64encode(os.urandom(32)).decode()}
-    return {"salt": base64.b64encode(salt).decode()}
+    return {"salt": salt}
 
 @router.post("/register", response_model=UserResponse, status_code=201)
 def register(user_data: UserCreate, db: Session = Depends(get_db)):

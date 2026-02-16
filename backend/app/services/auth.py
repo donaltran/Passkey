@@ -7,16 +7,18 @@ from app.core.config import settings
 from app.models.user import User
 from app.schemas.auth import UserCreate, TokenData
 import base64
+import hashlib
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 def hash_auth_key(auth_key_hash: str) -> str:
-    """Server-side bcrypt hash of the client-provided auth key hash.
-    The client already ran PBKDF2/Argon2 — we add a second layer here."""
-    return pwd_context.hash(auth_key_hash)
+    """Truncate to 72 bytes via SHA-256 before bcrypt to avoid the 72-byte limit."""
+    truncated = hashlib.sha256(auth_key_hash.encode()).hexdigest()
+    return pwd_context.hash(truncated)
 
 def verify_auth_key(plain: str, hashed: str) -> bool:
-    return pwd_context.verify(plain, hashed)
+    truncated = hashlib.sha256(plain.encode()).hexdigest()
+    return pwd_context.verify(truncated, hashed)
 
 def create_access_token(data: dict, expires_delta: Optional[timedelta] = None) -> str:
     to_encode = data.copy()
@@ -37,7 +39,7 @@ def register_user(db: Session, user_data: UserCreate) -> User:
     db_user = User(
         email=user_data.email,
         auth_key_hash=server_hash,
-        salt=salt_bytes,
+        salt=user_data.salt
     )
     db.add(db_user)
     db.commit()
