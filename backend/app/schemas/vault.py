@@ -1,6 +1,6 @@
 from pydantic import BaseModel
 from datetime import datetime
-import uuid
+
 
 class VaultCreate(BaseModel):
     encrypted_data: str   # AES-256-GCM ciphertext, base64 encoded
@@ -11,8 +11,8 @@ class VaultUpdate(BaseModel):
     iv: str
 
 class VaultResponse(BaseModel):
-    id: uuid.UUID
-    user_id: uuid.UUID
+    id: str
+    user_id: str
     encrypted_data: str
     iv: str
     version: int
